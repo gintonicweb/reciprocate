@@ -1,0 +1,40 @@
+{
+    "name": "gintonicweb/reciprocate",
+    "description": "Reciprocate behavior plugin for CakePHP",
+    "type": "cakephp-plugin",
+    "homepage": "http://gintoniccms.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Philippe Lafrance",
+            "homepage": "http://phillafrance.com",
+            "role": "Author"
+        },
+        {
+            "name": "Contributors",
+            "homepage": "http://github.com/gintonicweb/multiselect/graphs/contributors"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/gintonicweb/reciprocate/issues",
+        "source": "https://github.com/gintonicweb/reciprocate"
+    },
+    "require": {
+        "php": ">=5.4.16",
+        "cakephp/cakephp": "~3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*",
+        "cakephp/cakephp-codesniffer": "2.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Reciprocate\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Reciprocate\\Test\\": "tests"
+        }
+    }
+}
