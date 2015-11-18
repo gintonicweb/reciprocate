@@ -28,33 +28,77 @@ class ReciprocateBehavior extends Behavior
     }
 
     /**
-     * Find all reciprocated relations
+     * Finder Method that returns the Reciprocator object for all reciprocated relations
      *
      * @param \Cake\ORM\Query $query Query
      * @param array  $options the 'id' key must define the targetted user
      * @return \Cake\ORM\Query
      */
-    public function findReciprocate(Query $query, array $options)
+    public function findReciprocated(Query $query, array $options)
     {
         $config = $this->config($options['name']);
+        return $query
+            ->where(['id IN' => $this->_getSent($config, $options)])
+            ->andWhere(['id IN' => $this->_getRecieved($config, $options)]);
+    }
 
-        $sent = $this->_table->find()
-            ->matching($config['model'], function ($q) use ($config, $options) {
-                return $q->where([$config['foreignKey'] => $options['id']]);
-            })
-            ->distinct()
-            ->select(['id' => $config['reciprocatorKey']]);
+    /**
+     * Finder Method that returns the Reciprocator object for all sent relations
+     *
+     * @param \Cake\ORM\Query $query Query
+     * @param array  $options the 'id' key must define the targetted user
+     * @return \Cake\ORM\Query
+     */
+    public function findReciprocateSent(Query $query, array $options)
+    {
+        $config = $this->config($options['name']);
+        return $query->where(['id IN' => $this->_getSent($config, $options)]);
+    }
 
-        $recieved = $this->_table->find()
+    /**
+     * Finder Method that returns the Reciprocator object for all recieved relations
+     *
+     * @param \Cake\ORM\Query $query Query
+     * @param array  $options the 'id' key must define the targetted user
+     * @return \Cake\ORM\Query
+     */
+    public function findReciprocateRecieved(Query $query, array $options)
+    {
+        $config = $this->config($options['name']);
+        return $query->where(['id IN' => $this->_getRecieved($config, $options)]);
+    }
+
+    /**
+     * Query that returns the Reciprocator object for all recieved relations
+     *
+     * @param array $config The configuration settings provided to this behavior.
+     * @param array  $options the 'id' key must define the targetted user
+     * @return \Cake\ORM\Query
+     */
+    protected function _getRecieved($config, $options)
+    {
+        return $this->_table->find()
             ->matching($config['model'], function ($q) use ($config, $options) {
                 return $q->where([$config['reciprocatorKey'] => $options['id']]);
             })
             ->distinct()
             ->select(['id' => $config['foreignKey']]);
+    }
 
-        return $query->where([
-            'id IN' => $sent,
-            'id IN' => $recieved
-        ]);
+    /**
+     * Query that returns the Reciprocator object for all sent relations
+     *
+     * @param array $config The configuration settings provided to this behavior.
+     * @param array  $options the 'id' key must define the targetted user
+     * @return \Cake\ORM\Query
+     */
+    protected function _getSent($config, $options)
+    {
+        return $this->_table->find()
+            ->matching($config['model'], function ($q) use ($config, $options) {
+                return $q->where([$config['foreignKey'] => $options['id']]);
+            })
+            ->distinct()
+            ->select(['id' => $config['reciprocatorKey']]);
     }
 }

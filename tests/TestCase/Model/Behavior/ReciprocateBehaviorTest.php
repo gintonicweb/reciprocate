@@ -43,10 +43,21 @@ class ReciprocateBehaviorTest extends TestCase
         $friendshipsTable->save($friendship);
 
         $result = $this->Users
-            ->find('reciprocate', ['name' => 'friends', 'id' => 1])
+            ->find('reciprocated', ['name' => 'friends', 'id' => 1])
             ->extract('id')
             ->toArray();
+        $this->assertequals($result, []);
 
+        $result = $this->Users
+            ->find('reciprocateSent', ['name' => 'friends', 'id' => 1])
+            ->extract('id')
+            ->toArray();
+        $this->assertequals($result, [2]);
+
+        $result = $this->Users
+            ->find('reciprocateRecieved', ['name' => 'friends', 'id' => 1])
+            ->extract('id')
+            ->toArray();
         $this->assertequals($result, []);
     }
 
@@ -58,10 +69,21 @@ class ReciprocateBehaviorTest extends TestCase
         $friendshipsTable->save($friendship);
 
         $result = $this->Users
-            ->find('reciprocate', ['name' => 'friends', 'id' => 1])
+            ->find('reciprocated', ['name' => 'friends', 'id' => 1])
             ->extract('id')
             ->toArray();
+        $this->assertequals($result, []);
 
+        $result = $this->Users
+            ->find('reciprocateSent', ['name' => 'friends', 'id' => 1])
+            ->extract('id')
+            ->toArray();
+        $this->assertequals($result, []);
+
+        $result = $this->Users
+            ->find('reciprocateRecieved', ['name' => 'friends', 'id' => 1])
+            ->extract('id')
+            ->toArray();
         $this->assertequals($result, [2]);
     }
     
@@ -75,10 +97,21 @@ class ReciprocateBehaviorTest extends TestCase
         $friendshipsTable->save($friendship);
 
         $result = $this->Users
-            ->find('reciprocate', ['name' => 'friends', 'id' => 1])
+            ->find('reciprocated', ['name' => 'friends', 'id' => 1])
             ->extract('id')
             ->toArray();
+        $this->assertequals($result, [2]);
 
+        $result = $this->Users
+            ->find('reciprocateSent', ['name' => 'friends', 'id' => 1])
+            ->extract('id')
+            ->toArray();
+        $this->assertequals($result, [2]);
+
+        $result = $this->Users
+            ->find('reciprocateRecieved', ['name' => 'friends', 'id' => 1])
+            ->extract('id')
+            ->toArray();
         $this->assertequals($result, [2]);
     }
 }
