@@ -21,18 +21,8 @@ class ReciprocateBehavior extends Behavior
     {
         $configs = $this->config();
         foreach ($configs as $name => $config) {
-
-            $this->_table->hasMany($config['model'],[
+            $this->_table->hasMany($config['model'], [
                 'foreignKey' => $config['foreignKey']
-            ]);
-
-            $joinTable = TableRegistry::get($config['model']);
-            $joinTable->belongsTo($this->_table->alias());
-
-            $reciprocatorAlias = ucfirst($name) . 'Reciprocator';
-            $joinTable->belongsTo($reciprocatorAlias, [
-                'className' => $config['reciprocatorModel'],
-                'foreignKey' => $config['reciprocatorKey'],
             ]);
         }
     }
@@ -48,24 +38,23 @@ class ReciprocateBehavior extends Behavior
     {
         $config = $this->config($options['name']);
 
-        $table = TableRegistry::get($config['model'])->table();
-        $alias = TableRegistry::get($config['model'])->alias();
+        $sent = $this->_table->find()
+            ->matching($config['model'], function ($q) use ($config, $options) {
+                return $q->where([$config['foreignKey'] => $options['id']]);
+            })
+            ->distinct()
+            ->select(['id' => $config['reciprocatorKey']]);
 
-        $reciprocatorAlias = ucfirst($options['name']) . 'Reciprocator';
+        $recieved = $this->_table->find()
+            ->matching($config['model'], function ($q) use ($config, $options) {
+                return $q->where([$config['reciprocatorKey'] => $options['id']]);
+            })
+            ->distinct()
+            ->select(['id' => $config['foreignKey']]);
 
-        $cond1 = $alias . '.' . $config['foreignKey'] . ' = ' . 'r.' . $config['reciprocatorKey'];
-        $cond2 = $alias . '.' . $config['reciprocatorKey'] . ' = r.' . $config['foreignKey'];
-
-        return $query
-            ->contain([
-                $alias => function ($q) use ($table, $cond1, $cond2, $reciprocatorAlias) {
-                    return $q
-                        ->innerJoin(
-                            ['r' => $table],
-                            [$cond1, $cond2]
-                        )
-                        ->contain([$reciprocatorAlias]);
-                },
-            ]);
+        return $query->where([
+            'id IN' => $sent,
+            'id IN' => $recieved
+        ]);
     }
 }

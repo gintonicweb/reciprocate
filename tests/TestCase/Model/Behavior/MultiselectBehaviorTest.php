@@ -27,28 +27,58 @@ class ReciprocateBehaviorTest extends TestCase
                 'reciprocatorKey' => 'friend_id',
             ]
         ]);
-        $this->Behavior = $this->Users->behaviors()->ReciprocateMultiselect;
     }
 
     public function tearDown()
     {
-        $this->Articles->removeBehavior('Multiselect');
+        $this->Users->removeBehavior('Multiselect');
         parent::tearDown();
     }
 
-    public function testFrienships()
+    public function testSent()
     {
         $friendshipsTable = TableRegistry::get('Friendships');
+
+        $friendship = $friendshipsTable->newEntity(['user_id' => 1, 'friend_id' => 2]);
+        $friendshipsTable->save($friendship);
+
+        $result = $this->Users
+            ->find('reciprocate', ['name' => 'friends', 'id' => 1])
+            ->extract('id')
+            ->toArray();
+
+        $this->assertequals($result, []);
+    }
+
+    public function testRecieved()
+    {
+        $friendshipsTable = TableRegistry::get('Friendships');
+
+        $friendship = $friendshipsTable->newEntity(['user_id' => 2, 'friend_id' => 1]);
+        $friendshipsTable->save($friendship);
+
+        $result = $this->Users
+            ->find('reciprocate', ['name' => 'friends', 'id' => 1])
+            ->extract('id')
+            ->toArray();
+
+        $this->assertequals($result, [2]);
+    }
+    
+    public function testReciprocated()
+    {
+        $friendshipsTable = TableRegistry::get('Friendships');
+
         $friendship = $friendshipsTable->newEntity(['user_id' => 1, 'friend_id' => 2]);
         $friendshipsTable->save($friendship);
         $friendship = $friendshipsTable->newEntity(['user_id' => 2, 'friend_id' => 1]);
         $friendshipsTable->save($friendship);
 
         $result = $this->Users
-            ->find()
-            ->find('reciprocate', ['name' => 'friends'])
-            ->toarray();
+            ->find('reciprocate', ['name' => 'friends', 'id' => 1])
+            ->extract('id')
+            ->toArray();
 
-        $this->markTestIncomplete('Not implemented yet.');
+        $this->assertequals($result, [2]);
     }
 }
