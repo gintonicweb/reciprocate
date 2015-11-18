@@ -41,7 +41,15 @@ $this->addBehavior('Reciprocate.Reciprocate', [
 We can then retrieve the list of friends for a user with the following finder
 
 ```
-$this->Users->find('reciprocate', [
+$friends = $this->Users->find('reciprocated', [
+    'name' => 'friends', 
+    'id' => $this->Auth->user('id')
+]);
+$friendRequestSent = $this->Users->find('reciprocateSent', [
+    'name' => 'friends', 
+    'id' => $this->Auth->user('id')
+]);
+$friendRequestRecieved = $this->Users->find('reciprocateRecieved', [
     'name' => 'friends', 
     'id' => $this->Auth->user('id')
 ]);
