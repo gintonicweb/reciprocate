@@ -1,3 +1,8 @@
+[![Build Status](https://travis-ci.org/gintonicweb/reciprocate.svg)](https://travis-ci.org/gintonicweb/multiselect)
+[![Coverage Status](https://coveralls.io/repos/gintonicweb/reciprocate/badge.svg?branch=master&service=github)](https://coveralls.io/github/gintonicweb/multiselect?branch=master)
+[![Packagist](https://img.shields.io/packagist/dt/gintonicweb/reciprocate.svg)]()
+[![Software License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 # Reciprocate plugin for CakePHP
 
 Reciprocate Behavior lets you know if two entities have the inverse matching 
